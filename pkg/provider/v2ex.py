@@ -3,6 +3,9 @@ V2EX
 '''
 
 import requests, re
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class V2ex(object):
     def __init__(self, cookie):
