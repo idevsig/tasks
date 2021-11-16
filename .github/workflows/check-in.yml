@@ -42,3 +42,4 @@ jobs:
           DINGTALK_ROBOT_SECRET: ${{ secrets.DINGTALK_ROBOT_SECRET}}
           DINGTALK_ROBOT_TOKEN: ${{ secrets.DINGTALK_ROBOT_TOKEN}}
         run: python check.py
+        
