@@ -15,7 +15,6 @@ class V2ex(object):
 
     def set_headers(self, cookie):
         self.session.headers.update({
-            # ':authority': 'v2ex.com',
             'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
             'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'en-US,en;q=0.9',
@@ -37,7 +36,7 @@ class V2ex(object):
 
     def once(self):
         msg = '「V2EX」 签到'
-        print(self.session.headers)
+        # print(self.session.headers)
         req_url = 'https://v2ex.com/mission/daily'
         r = self.session.get(req_url, verify=False, timeout=120)
         # print(r.text)

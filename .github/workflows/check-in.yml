@@ -10,7 +10,7 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: '0 17 * * *'
+    - cron: '0 23 * * *'
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -42,4 +42,3 @@ jobs:
           DINGTALK_ROBOT_SECRET: ${{ secrets.DINGTALK_ROBOT_SECRET}}
           DINGTALK_ROBOT_TOKEN: ${{ secrets.DINGTALK_ROBOT_TOKEN}}
         run: python check.py
-        
