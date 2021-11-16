@@ -12,6 +12,7 @@ class V2ex(object):
         print('v2ex')
         self.session = requests.Session()
         self.set_headers(cookie)
+        self.req_url = 'https://v2ex.com/mission/daily'
 
     def set_headers(self, cookie):
         self.session.headers.update({
@@ -37,8 +38,7 @@ class V2ex(object):
     def once(self):
         msg = '「V2EX」 签到'
         # print(self.session.headers)
-        req_url = 'https://v2ex.com/mission/daily'
-        r = self.session.get(req_url, verify=False, timeout=120)
+        r = self.session.get(self.req_url, verify=False, timeout=120)
         # print(r.text)
         if '需要先登录' in r.text:
             msg += "cookie 已失效"
@@ -54,14 +54,13 @@ class V2ex(object):
         if state == -1 or state == 0:
             return resp
         # print(resp)
-        once = resp[0]
 
         msg = '「V2EX」'
         # 签到
-        sign_url = f"https://v2ex.com/mission/daily/redeem?{once}"
+        sign_url = "{}/redeem?{}".format(self.req_url, resp[0])
         sign = self.session.get(sign_url, verify=False, timeout=120)
         # 获取签到情况
-        r = self.session.get(self.url, verify=False)
+        r = self.session.get(self.req_url, verify=False)
         # 获取签到情况
         if '每日登录奖励已领取' in r.text:
             msg += ' 签到成功！'
