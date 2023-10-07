@@ -8,18 +8,45 @@
 
 ## 使用
 
+### 1. 设置推送通知环境变量
+
+- **Bark**
+
 ```bash
+export BARK_TOKEN="bark_token"
+```
+
+### 2. 设置环境变量
+
+- **MegStudio 算力平台**
+
+```bash
+export MEGSTUDIO_USERNAME="your_username"
+export MEGSTUDIO_PASSWORD="your_password"
+export MEGSTUDIO_UID="your_uid"
+export MEGSTUDIO_TOKEN="your_token"
+export MEGSTUDIO_COOKIE="your_cookie"
+```
+
+- **V2EX**
+
+```bash
+export V2EX_COOKIE="your_cookie"
+```
+
+### 3. 运行
+
+```bash
+# 安装依赖
 pip install -r requirements.txt
 
-# 设置需签到的平台账号信息
-export XXX_TOKEN=XXX
-
+# 执行
 python run.py
 ```
 
 ## 技术背景
 
-1. 使用 [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) 识别验证码，识别成功率一般般，70% 的成功率。
+1. 使用 [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) 识别验证码，识别成功率一般，大约 70% 的成功率。
 
 ## TODO
 
