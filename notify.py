@@ -31,7 +31,7 @@ class Notify:
         """
         # Check if BARK_TOKEN is set
         token = os.getenv('BARK_TOKEN')
-        print(token)
+        # print(token)
         if not token:
             return
 

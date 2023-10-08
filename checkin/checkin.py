@@ -22,12 +22,19 @@ class Checkin:
         cookie = os.getenv('MEGSTUDIO_COOKIE', '')
 
         this = MegStudio()
-        if username and password:
-            result = this.login(username, password)
-        elif uid and token and cookie:
-            result = this.checkin(uid, token, cookie)
-        else:
-            return
+        index = 0
+        result = False
+        while True:
+            if username and password:
+                result = this.login(username, password)
+            elif uid and token and cookie:
+                result = this.checkin(uid, token, cookie)
+            else:
+                return
+            if result or index >= 5:
+                break
+            if not result:
+                index = index + 1
 
         if result:
             print('megstudio checkin success')
