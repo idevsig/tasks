@@ -30,7 +30,7 @@ class Checkin:
             elif uid and token and cookie:
                 result = this.checkin(uid, token, cookie)
             else:
-                return
+                return -1
             if result or index >= 5:
                 break
             if not result:
@@ -38,7 +38,7 @@ class Checkin:
 
         if result:
             print('megstudio checkin success')
-            return True
+            return 1
         else:
             print('megstudio checkin failed')
 
@@ -53,21 +53,25 @@ class Checkin:
         if cookie:
             result = this.checkin(cookie)
         else:
-            return
+            return -1
 
         if result:
             print('v2ex checkin success')
-            return True
+            return 1
         else:
             print('v2ex checkin failed')
 
     def run(self):
-        if self.megstudio():
-            Notify('MegStudio CheckIn', 'MegStudio 签到成功', 'daily').send()
+        done = self.megstudio()
+        if done:
+            if done == 1:
+                Notify('MegStudio CheckIn', 'MegStudio 签到成功', 'daily').send()
         else:
             Notify('MegStudio CheckIn', 'MegStudio 签到失败', 'daily').send()
 
-        if self.v2ex():
-            Notify('V2EX CheckIn', 'V2EX 签到成功', 'daily').send()
+        done = self.v2ex()
+        if done:
+            if done == 1:
+                Notify('V2EX CheckIn', 'V2EX 签到成功', 'daily').send()
         else:
             Notify('V2EX CheckIn', 'V2EX 签到失败', 'daily').send()

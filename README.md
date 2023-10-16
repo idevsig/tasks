@@ -5,6 +5,7 @@
 | 平台                                     | 描述         |
 | :--------------------------------------- | :----------- |
 | [MegStudio](https://studio.brainpp.com/) | 免费算力平台 |
+| [V2ex](https://www.v2ex.com/)            | 社交平台     |
 
 ## 使用
 
@@ -14,6 +15,12 @@
 
 ```bash
 export BARK_TOKEN="bark_token"
+```
+
+- **Chanify**
+
+```bash
+export CHANIFY_TOKEN="chanify_token"
 ```
 
 ### 2. 设置环境变量
@@ -46,8 +53,8 @@ python run.py
 
 ## 技术背景
 
-1. 使用 [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) 识别验证码，识别成功率一般，大约 70% 的成功率。
+1. 使用 [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) 识别验证码，识别成功率一般。
 
 ## TODO
 
-1. 添加推送通知
+1. **&checkmark;** 添加推送通知

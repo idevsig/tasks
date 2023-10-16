@@ -28,6 +28,7 @@ class Notify:
     def bark(self):
         """
         Send a notification using Bark API.
+        https://github.com/finb/bark
         """
         # Check if BARK_TOKEN is set
         token = os.getenv('BARK_TOKEN')
@@ -55,11 +56,39 @@ class Notify:
         except Exception as e:
             print('发送通知时出错:', str(e))
 
+    def chanify(self):
+        """
+        Send a notification using Chanify API.
+        https://github.com/chanify/chanify
+        """
+        # Check if CHANIFY_TOKEN is set
+        token = os.getenv('CHANIFY_TOKEN')
+        # print(token)
+        if not token:
+            return
+
+        url = f'https://api.chanify.net/v1/sender/{token}'
+        data = {
+            "text": self.message,
+        }
+
+        try:
+            response = requests.post(
+                url=url, data=data)
+            if response.status_code == 200:
+                print('Chanify 推送成功')
+            else:
+                print('Chanify 推送失败')
+        except Exception as e:
+            print('发送通知时出错:', str(e))
+
     def send(self):
         self.bark()
+        self.chanify()
 
 
 # 使用示例
 if __name__ == "__main__":
     notifier = Notify("Test Title", "Test Bark Server", "test", "复制")
     notifier.bark()
+    notifier.chanify()
