@@ -168,3 +168,52 @@ class MegStudio():
                 return True
         except Exception as e:
             print('checkin failed: {}'.format(e))
+
+    def run(self):
+        username = os.getenv('MEGSTUDIO_USERNAME', '')
+        password = os.getenv('MEGSTUDIO_PASSWORD', '')
+        uid = os.getenv('MEGSTUDIO_UID', '')
+        token = os.getenv('MEGSTUDIO_TOKEN', '')
+        cookie = os.getenv('MEGSTUDIO_COOKIE', '')
+
+        index = 0
+        result = False
+        while True:
+            if username and password:
+                result = self.login(username, password)
+            elif uid and token and cookie:
+                result = self.checkin(uid, token, cookie)
+            else:
+                return -1
+            if result or index >= 5:
+                break
+            if not result:
+                index = index + 1
+
+        if result:
+            print('megstudio checkin success')
+            return 1
+        else:
+            print('megstudio checkin failed')
+
+
+if __name__ == "__main__":
+    '''
+    MegStuio MegEngine 免费算力平台签到
+    https://studio.brainpp.com/
+    '''
+    this = MegStudio()
+    done = this.run()
+
+    # 兼容青龙面板通知推送
+    try:
+        from notify import send
+    except ImportError:
+        import sys
+        sys.exit()
+
+    if done:
+        if done == 1:
+            send('V2EX CheckIn', 'V2EX 签到成功')
+    else:
+        send('V2EX CheckIn', 'V2EX 签到失败')

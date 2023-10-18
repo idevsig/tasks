@@ -15,51 +15,16 @@ class Checkin:
         MegStuio MegEngine 免费算力平台签到
         https://studio.brainpp.com/
         '''
-        username = os.getenv('MEGSTUDIO_USERNAME', '')
-        password = os.getenv('MEGSTUDIO_PASSWORD', '')
-        uid = os.getenv('MEGSTUDIO_UID', '')
-        token = os.getenv('MEGSTUDIO_TOKEN', '')
-        cookie = os.getenv('MEGSTUDIO_COOKIE', '')
-
         this = MegStudio()
-        index = 0
-        result = False
-        while True:
-            if username and password:
-                result = this.login(username, password)
-            elif uid and token and cookie:
-                result = this.checkin(uid, token, cookie)
-            else:
-                return -1
-            if result or index >= 5:
-                break
-            if not result:
-                index = index + 1
-
-        if result:
-            print('megstudio checkin success')
-            return 1
-        else:
-            print('megstudio checkin failed')
+        return this.run()
 
     def v2ex(self):
         '''
         v2ex 签到
         https://www.v2ex.com/
         '''
-        cookie = os.getenv('V2EX_COOKIE', '')
-
         this = V2EX()
-        if cookie:
-            result = this.checkin(cookie)
-        else:
-            return -1
-
-        if result:
-            print('v2ex checkin success')
-            return 1
-        else:
-            print('v2ex checkin failed')
+        return this.run()
 
     def run(self):
         done = self.megstudio()

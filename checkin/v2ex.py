@@ -1,12 +1,7 @@
-import json
 import os
 import re
-import time
 from urllib.parse import parse_qs, urlparse
 import requests
-import base64
-
-from utils import ocr_image, temp_image
 
 
 class V2EX():
@@ -31,6 +26,7 @@ class V2EX():
 
     def once(self):
         response = self.session.get(self.daily_url, verify=False, timeout=120)
+        # print(response.text)
         if '需要先登录' in response.text:
             return [-1, 'Cookie 已失效']
         elif '每日登录奖励已领取' in response.text:
@@ -67,3 +63,43 @@ class V2EX():
                 return
         except Exception as e:
             print('checkin failed: {}'.format(e))
+
+    def run(self):
+        '''
+        v2ex 签到
+        https://www.v2ex.com/
+        '''
+        cookie = os.getenv('V2EX_COOKIE', '')
+
+        if cookie:
+            result = self.checkin(cookie)
+        else:
+            return -1
+
+        if result:
+            print('v2ex checkin success')
+            return 1
+        else:
+            print('v2ex checkin failed')
+
+
+if __name__ == "__main__":
+    '''
+    v2ex 签到
+    https://www.v2ex.com/
+    '''
+    this = V2EX()
+    done = this.run()
+
+    # 兼容青龙面板通知推送
+    try:
+        from notify import send
+    except ImportError:
+        import sys
+        sys.exit()
+
+    if done:
+        if done == 1:
+            send('V2EX CheckIn', 'V2EX 签到成功')
+    else:
+        send('V2EX CheckIn', 'V2EX 签到失败')
