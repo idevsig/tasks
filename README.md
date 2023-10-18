@@ -2,10 +2,10 @@
 
 ## 支持平台
 
-| 平台                                     | 是否支持青龙面板             | 描述         |
-| :--------------------------------------- | :--------------------------- | :----------- |
-| [MegStudio](https://studio.brainpp.com/) | 否（验证码需用到第三方 OCR） | 免费算力平台 |
-| [V2ex](https://www.v2ex.com/)            | 是                           | 社交平台     |
+| 平台                                     | 是否支持青龙面板 | 描述         |
+| :--------------------------------------- | :--------------- | :----------- |
+| [MegStudio](https://studio.brainpp.com/) | 是               | 免费算力平台 |
+| [V2ex](https://www.v2ex.com/)            | 是               | 社交平台     |
 
 ## 使用
 
@@ -51,9 +51,20 @@ pip install -r requirements.txt
 python run.py
 ```
 
+### 4. 运行在[青龙面板](https://github.com/whyour/qinglong)
+
+1. `依赖管理` -> `Python` -> **添加依赖** `requests,ddddocr`
+
+```bash
+ql repo https://jihulab.com/devdo/checkin.git "utils|v2ex|megstudio" "run" "notify|ql" main
+
+# 海外
+ql repo https://github.com/devdoz/checkin.git "utils|v2ex|megstudio" "run" "notify|ql" main
+```
+
 ## 技术背景
 
-1. 使用 [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) 识别验证码，识别成功率一般。
+1. 使用 [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) 和 [ddddocr](https://github.com/sml2h3/ddddocr) 识别验证码。其中，**PaddleOCR** 识别成功率一般, **ddddocr** 识别成功率更高。
 
 ## TODO
 

@@ -1,7 +1,16 @@
+#!/usr/bin/env python3
+# _*_ coding:utf-8 _*_
 import os
 import re
-from urllib.parse import parse_qs, urlparse
 import requests
+
+"""
+File: v2ex.py(V2ex签到)
+Author: Jetsung
+cron: 40 0 * * *
+new Env('V2ex签到');
+Update: 2023/10/19
+"""
 
 
 class V2EX():
@@ -25,7 +34,7 @@ class V2EX():
         self.session.headers.update(headers)
 
     def once(self):
-        response = self.session.get(self.daily_url, verify=False, timeout=120)
+        response = self.session.get(self.daily_url, timeout=120)
         # print(response.text)
         if '需要先登录' in response.text:
             return [-1, 'Cookie 已失效']
@@ -48,11 +57,11 @@ class V2EX():
             # 签到
             checkin_api = "{}/redeem?{}".format(self.daily_url, once[0])
             response = self.session.get(
-                checkin_api, verify=False, timeout=120)
+                checkin_api, timeout=120)
             # print(response.text)
 
             # 签到结果
-            response = self.session.get(self.daily_url, verify=False)
+            response = self.session.get(self.daily_url)
             # print(response.text)
             if '每日登录奖励已领取' in response.text:
                 return True

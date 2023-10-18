@@ -1,6 +1,5 @@
-
-
-import os
+#!/usr/bin/env python3
+# _*_ coding:utf-8 _*_
 from checkin.megstudio import MegStudio
 from checkin.v2ex import V2EX
 from notify import Notify

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# _*_ coding:utf-8 _*_
 import json
 import os
 import re
@@ -5,8 +7,15 @@ import time
 from urllib.parse import parse_qs, urlparse
 import requests
 import base64
+from utils import ocr_image_ddddocr, temp_image
 
-from utils import ocr_image, temp_image
+"""
+File: megstudio.py(MegStudio签到)
+Author: Jetsung
+cron: 40 0 * * *
+new Env('MegStudio签到');
+Update: 2023/10/20
+"""
 
 
 class MegStudio():
@@ -57,11 +66,7 @@ class MegStudio():
             # 保存临时图片
             image_path = temp_image(image_data)
 
-            # 使用 OCR 工具提取验证码
-            ocr_result = ocr_image(image_path)
-
-            # 提取验证码中的数字
-            captcha = ''.join(re.findall(r'\d+', ocr_result[0][0][0]))
+            captcha = ocr_image_ddddocr(image_path)
             if captcha == '' or len(captcha) != 4:
                 raise Exception('captcha is empty or not 4 digits')
 
