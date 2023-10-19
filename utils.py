@@ -2,6 +2,7 @@ import re
 import tempfile
 from paddleocr import PaddleOCR
 import ddddocr
+import requests
 
 
 def ocr_image_paddle(image_path):
@@ -33,6 +34,21 @@ def ocr_image_ddddocr(image_path):
         image_bytes = file.read()
     ocr = ddddocr.DdddOcr()
     return ocr.classification(image_bytes)
+
+
+def ocr_image_url(url, image_path):
+    '''
+    ddddocr ocr api image
+    https://github.com/sml2h3/ocr_api_server
+    :param url: OCR API url
+    :param image_path: 图片地址
+    :return: ocr text result
+    '''
+    with open(image_path, 'rb') as file:
+        image_bytes = file.read()
+    files = {'image': (image_path, image_bytes)}
+    resp = requests.post(f"{url}/ocr/file", files=files)
+    return resp.text
 
 
 def temp_image(image_data):

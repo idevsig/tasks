@@ -3,12 +3,19 @@
 import json
 import os
 import re
+import tempfile
 import time
 from urllib.parse import parse_qs, urlparse
 import requests
 import base64
 
-from utils import ocr_image_url, temp_image, ocr_image_ddddocr
+"""
+File: megstudio.py(MegStudio签到)
+Author: Jetsung
+cron: 45 0 * * *
+new Env('MegStudio签到');
+Update: 2023/10/21
+"""
 
 
 class MegStudio():
@@ -22,6 +29,11 @@ class MegStudio():
 
     def login(self, username, password):
         try:
+            # OCR API
+            ocr_api_url = os.getenv('OCR_URL')
+            if not ocr_api_url:
+                raise Exception('OCR_URL is not set')
+
             # 获取到登录页面
             login_url = 'https://studio.brainpp.com/api/authv1/login?redirectUrl=https://studio.brainpp.com/'
             response = self.session.get(login_url)
@@ -56,19 +68,17 @@ class MegStudio():
             # image.show()
             # image_buffer.close()
 
-            # 保存临时图片
-            image_path = temp_image(image_data)
-
-            # OCR API
-            ocr_api_url = os.getenv('OCR_URL')
-            if ocr_api_url:
-                captcha = ocr_image_url(ocr_api_url, image_path)
-            else:
-                captcha = ocr_image_ddddocr(image_path)
+            # 获取验证码
+            with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as temp_file:
+                temp_file.write(image_data)
+                image_path = temp_file.name
+            with open(image_path, 'rb') as file:
+                image_bytes = file.read()
+            files = {'image': (image_path, image_bytes)}
+            resp = requests.post(f"{ocr_api_url}/ocr/file", files=files)
+            captcha = resp.text
             if captcha == '' or len(captcha) != 4:
                 raise Exception('captcha is empty or not 4 digits')
-
-            # 删除临时图片文件
             os.remove(image_path)
 
             # 登录
@@ -206,4 +216,17 @@ if __name__ == "__main__":
     https://studio.brainpp.com/
     '''
     this = MegStudio()
-    this.run()
+    done = this.run()
+
+    # 兼容青龙面板通知推送
+    try:
+        from notify import send
+    except ImportError:
+        import sys
+        sys.exit()
+
+    if done:
+        if done == 1:
+            send('MegStudio CheckIn', 'MegStudio 签到成功')
+    else:
+        send('MegStudio CheckIn', 'MegStudio 签到失败')
