@@ -29,6 +29,7 @@
 
   ```bash
   # OCR API URL
+  #当青龙面板为 `非 debian` 镜像时，必须填写
   export OCR_URL=''
 
   export MEGSTUDIO_USERNAME='your_username'
@@ -56,10 +57,17 @@ python run.py
 
 ## 支持[青龙面板](https://github.com/whyour/qinglong)
 
-1.  `依赖管理` -> `Python` -> **添加依赖** `requests`。
-2.  服务 `megstudio_ql` 必须自建 **[OCR API 服务](https://github.com/sml2h3/ocr_api_server)**，再设置环境变量 `OCR_URL`。
+1.  `依赖管理` -> `Python` -> **添加下表的依赖**。  
+    \*必需依赖 `requests`
+    |服务|依赖|说明|
+    |:--|:--|:--|
+    |_megstudio_ql_|`ddddocr`|**非必要**|
 
-    更新仓库脚本，需自行选择性删减 `.../checkin.git` 后的 `v2ex` 等服务。
+    **注意：**  
+    1). 自建 **[OCR API 服务](https://github.com/sml2h3/ocr_api_server)** 的相关教程。  
+    2). 当环境变量 `OCR_URL` 未设置时，必须安装 `ddddocr` 依赖（*Docker*版青龙面板时，必须为 [`debian` 版镜像：`whyour/qinglong:debian`](https://github.com/whyour/qinglong#docker)）。
+
+2.  自行选择所需的服务，相关命令查看 **[官方教程](https://github.com/whyour/qinglong#%E5%86%85%E7%BD%AE%E5%91%BD%E4%BB%A4)**。
 
     ```bash
     ql repo https://jihulab.com/devdo/checkin.git 'v2ex|megstudio_ql' 'run' 'notify|ql' main
@@ -76,7 +84,3 @@ python run.py
 
 1. **&checkmark;** 添加推送通知
 2. **&checkmark;** 兼容青龙面板
-
-```
-
-```

@@ -7,8 +7,7 @@ import time
 from urllib.parse import parse_qs, urlparse
 import requests
 import base64
-
-from utils import ocr_image_url, temp_image, ocr_image_ddddocr
+from utils import temp_image, ocr_image_url, ocr_image_lib
 
 
 class MegStudio():
@@ -64,12 +63,13 @@ class MegStudio():
             if ocr_api_url:
                 captcha = ocr_image_url(ocr_api_url, image_path)
             else:
-                captcha = ocr_image_ddddocr(image_path)
-            if captcha == '' or len(captcha) != 4:
-                raise Exception('captcha is empty or not 4 digits')
-
-            # 删除临时图片文件
+                captcha = ocr_image_lib(image_path)
             os.remove(image_path)
+
+            if not captcha:
+                return None
+            elif captcha == '' or len(captcha) != 4:
+                raise Exception('captcha is empty or not 4 digits')
 
             # 登录
             login_api = 'https://account.megvii.com/api/v1/login'
@@ -188,7 +188,7 @@ class MegStudio():
                 result = self.checkin(uid, token, cookie)
             else:
                 return -1
-            if result or index >= 5:
+            if result or result is None or index >= 5:
                 break
             if not result:
                 index = index + 1

@@ -32,7 +32,12 @@ class MegStudio():
             # OCR API
             ocr_api_url = os.getenv('OCR_URL')
             if not ocr_api_url:
-                raise Exception('OCR_URL is not set')
+                #     raise Exception('OCR_URL is not set')
+                try:
+                    import ddddocr
+                except ImportError as e:
+                    print(e)
+                    return None
 
             # 获取到登录页面
             login_url = 'https://studio.brainpp.com/api/authv1/login?redirectUrl=https://studio.brainpp.com/'
@@ -74,12 +79,16 @@ class MegStudio():
                 image_path = temp_file.name
             with open(image_path, 'rb') as file:
                 image_bytes = file.read()
-            files = {'image': (image_path, image_bytes)}
-            resp = requests.post(f"{ocr_api_url}/ocr/file", files=files)
-            captcha = resp.text
+            if ocr_api_url:
+                files = {'image': (image_path, image_bytes)}
+                resp = requests.post(f"{ocr_api_url}/ocr/file", files=files)
+                captcha = resp.text
+            else:
+                ocr = ddddocr.DdddOcr()
+                captcha = ocr.classification(image_bytes)
+            os.remove(image_path)
             if captcha == '' or len(captcha) != 4:
                 raise Exception('captcha is empty or not 4 digits')
-            os.remove(image_path)
 
             # 登录
             login_api = 'https://account.megvii.com/api/v1/login'
@@ -198,7 +207,7 @@ class MegStudio():
                 result = self.checkin(uid, token, cookie)
             else:
                 return -1
-            if result or index >= 5:
+            if result or result is None or index >= 5:
                 break
             if not result:
                 index = index + 1
