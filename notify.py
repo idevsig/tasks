@@ -1,6 +1,7 @@
 import os
 import json
 import requests
+import threading
 
 
 class Notify:
@@ -83,8 +84,12 @@ class Notify:
             print('发送通知时出错:', str(e))
 
     def send(self):
-        self.bark()
-        self.chanify()
+        bark = threading.Thread(target=self.bark)
+        chanify = threading.Thread(target=self.chanify)
+        bark.start()
+        chanify.start()
+        bark.join()
+        chanify.join()
 
 
 # 使用示例

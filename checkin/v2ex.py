@@ -44,13 +44,13 @@ class V2EX():
 
     def checkin(self, cookie=None):
         if not cookie:
-            return
+            return None
 
         try:
             self.headers(cookie)
             state, once = self.once()
             if state == -1:
-                return
+                return False
             if state == 0:
                 return True
 
@@ -61,17 +61,15 @@ class V2EX():
             # print(response.text)
 
             # 签到结果
-            response = self.session.get(self.daily_url)
+            response = self.session.get(self.daily_url, timeout=120)
             # print(response.text)
             if '每日登录奖励已领取' in response.text:
                 return True
             elif '登录' in response.text:
                 print('未登录')
-                return
-            else:
-                return
         except Exception as e:
             print('checkin failed: {}'.format(e))
+        return False
 
     def run(self):
         '''
@@ -79,17 +77,17 @@ class V2EX():
         https://www.v2ex.com/
         '''
         cookie = os.getenv('V2EX_COOKIE', '')
-
+        checked = False
         if cookie:
-            result = self.checkin(cookie)
+            checked = self.checkin(cookie)
         else:
-            return -1
+            return None
 
-        if result:
+        if checked:
             print('v2ex checkin success')
-            return 1
         else:
             print('v2ex checkin failed')
+        return checked
 
 
 if __name__ == "__main__":
@@ -103,12 +101,12 @@ if __name__ == "__main__":
     # 兼容青龙面板通知推送
     try:
         from notify import send
-    except ImportError:
+    except ImportError as e:
+        print(str(e))
         import sys
         sys.exit()
 
     if done:
-        if done == 1:
-            send('V2EX CheckIn', 'V2EX 签到成功')
+        send('V2EX CheckIn', 'V2EX 签到成功')
     else:
         send('V2EX CheckIn', 'V2EX 签到失败')

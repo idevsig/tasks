@@ -87,6 +87,9 @@ class MegStudio():
                 ocr = ddddocr.DdddOcr()
                 captcha = ocr.classification(image_bytes)
             os.remove(image_path)
+
+            if captcha is None:
+                return None
             if captcha == '' or len(captcha) != 4:
                 raise Exception('captcha is empty or not 4 digits')
 
@@ -166,6 +169,7 @@ class MegStudio():
             return self.checkin(uid=uid, token=csrf_token)
         except Exception as e:
             print('login failed: {}'.format(e))
+            return False
 
     def checkin(self, uid, token, cookie=None):
         # X-Csrf-Token
@@ -190,6 +194,7 @@ class MegStudio():
                 return True
         except Exception as e:
             print('checkin failed: {}'.format(e))
+        return False
 
     def run(self):
         username = os.getenv('MEGSTUDIO_USERNAME', '')
@@ -199,24 +204,27 @@ class MegStudio():
         cookie = os.getenv('MEGSTUDIO_COOKIE', '')
 
         index = 0
-        result = False
+        checked = False
         while True:
             if username and password:
-                result = self.login(username, password)
+                checked = self.login(username, password)
             elif uid and token and cookie:
-                result = self.checkin(uid, token, cookie)
+                checked = self.checkin(uid, token, cookie)
             else:
-                return -1
-            if result or result is None or index >= 5:
+                return None
+            if checked is None:
+                return None
+
+            if checked or index >= 5:
                 break
-            if not result:
+            else:
                 index = index + 1
 
-        if result:
+        if checked:
             print('megstudio checkin success')
-            return 1
         else:
             print('megstudio checkin failed')
+        return checked
 
 
 if __name__ == "__main__":
@@ -230,12 +238,12 @@ if __name__ == "__main__":
     # 兼容青龙面板通知推送
     try:
         from notify import send
-    except ImportError:
+    except ImportError as e:
+        print(str(e))
         import sys
         sys.exit()
 
     if done:
-        if done == 1:
-            send('MegStudio CheckIn', 'MegStudio 签到成功')
+        send('MegStudio CheckIn', 'MegStudio 签到成功')
     else:
         send('MegStudio CheckIn', 'MegStudio 签到失败')
