@@ -61,7 +61,7 @@ python run.py
     \*必需依赖 `requests`
     |服务|依赖|说明|
     |:--|:--|:--|
-    |_megstudio_ql_|`ddddocr`|**非必要**|
+    |_megstudio_ql_|`ddddocr`,`Pillow==9.5.0`|**非必要**|
 
     **注意：**  
     1). 自建 **[OCR API 服务](https://github.com/sml2h3/ocr_api_server)** 的相关教程。  

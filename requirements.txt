@@ -2,3 +2,4 @@ requests
 paddlepaddle
 paddleocr
 ddddocr
+Pillow==9.5.0

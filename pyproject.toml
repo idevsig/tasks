@@ -1,0 +1,22 @@
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "Jetsung Chan", email = "jetsungchan@gmail.com"},
+]
+dependencies = [
+    "requests",
+    "paddlepaddle",
+    "paddleocr",
+    "ddddocr",
+    "Pillow==9.5.0",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "None"}
+
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
