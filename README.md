@@ -6,6 +6,7 @@
 | :--------------------------------------- | :------------------------------------------- | :----------- |
 | [MegStudio](https://studio.brainpp.com/) | 是 [`megstudio_ql`](checkin/megstudio_ql.py) | 免费算力平台 |
 | [V2ex](https://www.v2ex.com/)            | 是                                           | 社交平台     |
+| [Fanli](https://www.fanli.com/)          | 是                                           | 购物返利     |
 
 ## 使用
 
@@ -43,6 +44,11 @@
 
   ```bash
   export V2EX_COOKIE='your_cookie'
+  ```
+
+- **Fanli**
+  ```bash
+  export FANLI_COOKIE='your_cookie'
   ```
 
 ### 3. 运行
