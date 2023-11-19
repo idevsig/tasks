@@ -11,16 +11,32 @@
 
 ### 1. 设置推送通知环境变量
 
-- **Bark**
+- **[Bark](https://github.com/finb/bark)**
 
   ```bash
   export BARK_TOKEN='bark_token'
   ```
 
-- **Chanify**
+- **[Chanify](https://github.com/chanify/chanify)**
 
   ```bash
   export CHANIFY_TOKEN='chanify_token'
+  ```
+
+- **[Lark](https://open.larksuite.com/document/client-docs/bot-v3/add-custom-bot#756b882f)**
+
+  ```bash
+  export LARK_TOKEN='lark_token'
+  # 若需签名
+  export LARK_SECRET='lark_secret'
+  ```
+
+- **[飞书](https://open.feishu.cn/document/client-docs/bot-v3/add-custom-bot#756b882f)**
+
+  ```bash
+  export FEISHU_TOKEN='feishu_token'
+  # 若需签名
+  export FEISHU_SECRET='feishu_secret'
   ```
 
 ### 2. 设置环境变量
