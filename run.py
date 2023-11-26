@@ -6,7 +6,6 @@ from notify import Notify
 
 from checkin.megstudio import MegStudio
 from checkin.v2ex import V2EX
-from checkin.fanli import Fanli
 
 def checkin(check_in, service_name):
     done = check_in()
@@ -22,15 +21,12 @@ def checkin(check_in, service_name):
 def main():
     megstudio = threading.Thread(target=checkin, args=(MegStudio().run, 'MegStudio'))
     v2ex = threading.Thread(target=checkin, args=(V2EX().run, 'V2EX'))
-    fanli = threading.Thread(target=checkin, args=(Fanli().run, 'Fanli'))
 
     megstudio.start()
     v2ex.start()
-    fanli.start()
 
     megstudio.join()
     v2ex.join()
-    fanli.join()
 
 
 if __name__ == "__main__":
