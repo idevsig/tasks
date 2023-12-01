@@ -37,8 +37,10 @@ class OCR():
             if self.ocr_api_url:
                 return self.from_url()
 
-            # return self.from_dep_ddddocr()
-            return self.from_dep_paddleocr()
+            code = self.from_dep_ddddocr()
+            if code is None:
+                return self.from_dep_paddleocr()
+            return code
         except Exception as e:
             print(e)
 

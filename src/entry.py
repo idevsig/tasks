@@ -15,19 +15,8 @@ def task(cls, service_name):
         message = "「{}」 \n{}".format(service_name, text)
         Notify(message).send()
 
-        # 青龙面板通知推送
-        ql_notify(service_name, message)
     except Exception as e:
         print(e)
-
-
-def ql_notify(service_name, message):
-    # 兼容青龙面板通知推送
-    try:
-        from notify import send
-        send(f'{service_name} CheckIn', message)
-    except ImportError as e:
-        print("ql notify error: ".format(e))
 
 
 def entry():

@@ -84,3 +84,13 @@ class V2EX():
         text = '成功' if checked else '失败'
         return f"签到{text} \n"
         # return checked
+
+
+if __name__ == "__main__":
+    message = V2EX().run()
+    # 兼容青龙面板通知推送
+    try:
+        from notify import send
+        send(f'V2EX CheckIn', message)
+    except ImportError as e:
+        print(e, message)
