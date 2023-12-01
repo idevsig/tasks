@@ -8,6 +8,8 @@ from urllib.parse import parse_qs, urlparse
 import requests
 import base64
 
+from src.ocr import OCR
+
 """
 File: megstudio.py(MegStudio签到)
 Author: Jetsung
@@ -27,13 +29,6 @@ class MegStudio():
         self.session = requests.Session()
 
     def login(self, username, password):
-        try:
-            from src.ocr import OCR
-        except ImportError as e:
-            from ocr import OCR
-        except ImportError as e:
-            pass
-
         try:
             ocr = OCR()
             ocr_api_url = os.getenv('OCR_URL')
