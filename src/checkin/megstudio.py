@@ -7,7 +7,16 @@ import time
 from urllib.parse import parse_qs, urlparse
 import requests
 import base64
-from utils import temp_image, ocr_image_url, ocr_image_lib
+
+from src.ocr import OCR
+
+"""
+File: megstudio.py(MegStudio签到)
+Author: Jetsung
+cron: 25 */7 * * *
+new Env('MegStudio签到');
+Update: 2023/10/21
+"""
 
 
 class MegStudio():
@@ -21,6 +30,11 @@ class MegStudio():
 
     def login(self, username, password):
         try:
+            ocr = OCR()
+            ocr_api_url = os.getenv('OCR_URL')
+            if ocr_api_url:
+                ocr.set_ocr_api_url(ocr_api_url)
+
             # 获取到登录页面
             login_url = 'https://studio.brainpp.com/api/authv1/login?redirectUrl=https://studio.brainpp.com/'
             response = self.session.get(login_url)
@@ -48,28 +62,15 @@ class MegStudio():
             biz_id = captcha_data['data']['biz_id']
             image_base64 = captcha_data['data']['image']
             image_data = base64.b64decode(image_base64)
-            # image_buffer = BytesIO(image_data)
-            # image = Image.open(image_buffer)
-            # image_path = 'output_image.png'
-            # image.save(image_path, 'PNG')
-            # image.show()
-            # image_buffer.close()
 
-            # 保存临时图片
-            image_path = temp_image(image_data)
+            ocr.set_image_data(image_data)
+            # ocr.set_image_url('http://0.0.0.0:8000/2.png')
+            # ocr.set_image_path('3.png')
 
-            # OCR API
-            ocr_api_url = os.getenv('OCR_URL')
-            if ocr_api_url:
-                captcha = ocr_image_url(ocr_api_url, image_path)
-            else:
-                # OCR LIB
-                captcha = ocr_image_lib(image_path)
-            os.remove(image_path)
-
+            captcha = ocr.extract()
             if captcha is None:
                 return None
-            elif captcha == '' or len(captcha) != 4:
+            if captcha == '' or len(captcha) != 4:
                 raise Exception('captcha is empty or not 4 digits')
 
             # 登录
@@ -175,13 +176,7 @@ class MegStudio():
             print('checkin failed: {}'.format(e))
         return False
 
-    def run(self):
-        username = os.getenv('MEGSTUDIO_USERNAME', '')
-        password = os.getenv('MEGSTUDIO_PASSWORD', '')
-        uid = os.getenv('MEGSTUDIO_UID', '')
-        token = os.getenv('MEGSTUDIO_TOKEN', '')
-        cookie = os.getenv('MEGSTUDIO_COOKIE', '')
-
+    def process(self, username=None, password=None, uid=None, token=None, cookie=None):
         index = 0
         checked = False
         while True:
@@ -191,6 +186,7 @@ class MegStudio():
                 checked = self.checkin(uid, token, cookie)
             else:
                 return None
+
             if checked is None:
                 return None
 
@@ -198,18 +194,38 @@ class MegStudio():
                 break
             else:
                 index = index + 1
+            print('the {} time checkin'.format(index))
 
+        account = username if username else uid
         if checked:
-            print('megstudio checkin success')
+            print(f'megstudio {account} checkin success')
         else:
-            print('megstudio checkin failed')
+            print(f'megstudio {account} checkin failed')
         return checked
 
+    def run(self):
+        username_str = os.getenv('MEGSTUDIO_USERNAME', '')
+        password_str = os.getenv('MEGSTUDIO_PASSWORD', '')
+        uid_str = os.getenv('MEGSTUDIO_UID', '')
+        token_str = os.getenv('MEGSTUDIO_TOKEN', '')
+        cookie_str = os.getenv('MEGSTUDIO_COOKIE', '')
 
-if __name__ == "__main__":
-    '''
-    MegStuio MegEngine 免费算力平台签到
-    https://studio.brainpp.com/
-    '''
-    this = MegStudio()
-    this.run()
+        message = []
+        if username_str and password_str:
+            usernames = username_str.split(';')
+            passwords = password_str.split(';')
+            for username, password in zip(usernames, passwords):
+                checked = self.process(username, password)
+                text = '成功' if checked else '失败'
+                message.append(f"{username} 签到{text} \n")
+
+        if uid_str and token_str and cookie_str:
+            uids = uid_str.split(';')
+            tokens = token_str.split(';')
+            cookies = cookie_str.split(';')
+            for uid, token, cookie in zip(uids, tokens, cookies):
+                checked = self.process(uid, token, cookie)
+                text = '成功' if checked else '失败'
+                message.append(f"{uid} 签到{text} \n")
+
+        return "".join(message)

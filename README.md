@@ -7,10 +7,10 @@
 
 ## 支持平台
 
-|      | 平台                                     | 是否支持青龙面板                             | 描述         |
-| :--- | :--------------------------------------- | :------------------------------------------- | :----------- |
-| 签到 | [MegStudio](https://studio.brainpp.com/) | 是 [`megstudio_ql`](checkin/megstudio_ql.py) | 免费算力平台 |
-| 签到 | [V2ex](https://www.v2ex.com/)            | 是                                           | 社交平台     |
+| 类型 | 平台                                     | 多账号 | 支持青龙 | 描述         |
+| :--- | :--------------------------------------- | :----- | :------- | :----------- |
+| 签到 | [MegStudio](https://studio.brainpp.com/) | 是     | 是       | 免费算力平台 |
+| 签到 | [V2EX](https://www.v2ex.com/)            | 是     | 是       | 社交平台     |
 
 ## 使用
 
@@ -50,15 +50,15 @@
 
   ```bash
   # OCR API URL
-  #当青龙面板为 `非 debian` 镜像时，必须填写
+  # 若 `paddleocr, ddddocr` 依赖无法正常安装，则使用外置的OCR，即该URL必须填写
   export OCR_URL=''
 
-  export MEGSTUDIO_USERNAME='your_username'
-  export MEGSTUDIO_PASSWORD='your_password'
+  export MEGSTUDIO_USERNAME='USERNAME1;USERNAME2;USERNAME3'
+  export MEGSTUDIO_PASSWORD='PASSWORD1;PASSWORD2;PASSWORD3'
   # or
-  export MEGSTUDIO_UID='your_uid'
-  export MEGSTUDIO_TOKEN='your_token'
-  export MEGSTUDIO_COOKIE='your_cookie'
+  export MEGSTUDIO_UID='UID1;UID2;UID3'
+  export MEGSTUDIO_TOKEN='TOKEN1;TOKEN2;TOKEN3'
+  export MEGSTUDIO_COOKIE='COOKIE1;COOKIE2;COOKIE3'
   ```
 
 - **V2EX**
@@ -74,7 +74,7 @@
 pip install -r requirements.txt
 
 # 执行
-python run.py
+python main.py
 ```
 
 ## 支持[青龙面板](https://github.com/whyour/qinglong)
@@ -83,24 +83,24 @@ python run.py
     \*必需依赖 `requests`
     |服务|依赖|说明|
     |:--|:--|:--|
-    |_megstudio_ql_|`ddddocr`,`Pillow==9.5.0`|**非必要**|
+    |_megstudio_|`ddddocr`,`Pillow==9.5.0`|**非必要**|
 
     **注意：**  
     1). 自建 **[OCR API 服务](https://github.com/sml2h3/ocr_api_server)** 的相关教程。  
-    2). 当环境变量 `OCR_URL` 未设置时，必须安装 `ddddocr` 依赖（*Docker*版青龙面板时，必须为 [`debian` 版镜像：`whyour/qinglong:debian`](https://github.com/whyour/qinglong#docker)）。
+    2). 当环境变量 `OCR_URL` 未设置时，必须安装 `ddddocr` 或 `paddleocr` 依赖（_Docker_ 版可能需要使用 [`debian` 镜像：`whyour/qinglong:debian`](https://github.com/whyour/qinglong#docker)）。
 
 2.  自行选择所需的服务，相关命令查看 **[官方教程](https://github.com/whyour/qinglong#%E5%86%85%E7%BD%AE%E5%91%BD%E4%BB%A4)**。
 
     ```bash
-    ql repo https://jihulab.com/idevsig/tasks.git 'v2ex|megstudio_ql' 'run' 'notify|ql' main
+    ql repo https://jihulab.com/idevsig/tasks.git
 
     # 海外
-    ql repo https://github.com/idevsig/tasks.git 'v2ex|megstudio_ql' 'run' 'notify|ql' main
+    ql repo https://github.com/idevsig/tasks.git
     ```
 
 ## 技术背景
 
-1. 使用 [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) 和 [ddddocr](https://github.com/sml2h3/ddddocr) 识别验证码。其中，**PaddleOCR** 识别成功率一般, **ddddocr** 识别成功率更高，ddddocr 支持自建 API。
+1. 使用 [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) 和 [ddddocr](https://github.com/sml2h3/ddddocr) 识别验证码。其中，**PaddleOCR** 识别成功率一般, **ddddocr** 识别成功率更高。支持使用 `ddddocr` 自建 API。
 
 ## TODO
 

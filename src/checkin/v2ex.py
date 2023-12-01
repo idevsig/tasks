@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# /usr/bin/env python3
 # _*_ coding:utf-8 _*_
 import os
 import re
@@ -7,9 +7,9 @@ import requests
 """
 File: v2ex.py(V2ex签到)
 Author: Jetsung
-cron: 40 0 * * *
+cron: 40 */10 * * *
 new Env('V2ex签到');
-Update: 2023/10/19
+Update: 2023/12/01
 """
 
 
@@ -72,41 +72,15 @@ class V2EX():
         return False
 
     def run(self):
-        '''
-        v2ex 签到
-        https://www.v2ex.com/
-        '''
         cookie = os.getenv('V2EX_COOKIE', '')
-        checked = False
-        if cookie:
-            checked = self.checkin(cookie)
-        else:
+        if not cookie:
             return None
 
+        checked = self.checkin(cookie)
         if checked:
             print('v2ex checkin success')
         else:
             print('v2ex checkin failed')
-        return checked
-
-
-if __name__ == "__main__":
-    '''
-    v2ex 签到
-    https://www.v2ex.com/
-    '''
-    this = V2EX()
-    done = this.run()
-
-    # 兼容青龙面板通知推送
-    try:
-        from notify import send
-    except ImportError as e:
-        print(str(e))
-        import sys
-        sys.exit()
-
-    if done:
-        send('V2EX CheckIn', 'V2EX 签到成功')
-    else:
-        send('V2EX CheckIn', 'V2EX 签到失败')
+        text = '成功' if checked else '失败'
+        return f"签到{text} \n"
+        # return checked

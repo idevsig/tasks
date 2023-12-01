@@ -7,13 +7,15 @@ import time
 import requests
 import threading
 
+from urllib.parse import quote_plus
+
 
 class Notify:
     """
-    Notify class for sending notifications using Bark API.
+    Notify class for sending notifications.
     """
 
-    def __init__(self, title, message, group=None, copy=None):
+    def __init__(self, message, options={}):
         """
         Constructor for Notify class.
 
@@ -23,12 +25,8 @@ class Notify:
             group (str): The group to which the notification belongs.
             copy (str): The copy content of the notification.
         """
-        self.title = title
         self.message = message
-        self.group = group
-        self.copy = copy
-
-        self.json_type = 'application/json; charset=utf-8'
+        self.options = options
 
     def gen_sign(self, timestamp, secret):
         """
@@ -45,8 +43,25 @@ class Notify:
         """
         string_to_sign = '{}\n{}'.format(timestamp, secret)
         hmac_code = hmac.new(string_to_sign.encode("utf-8"), digestmod=hashlib.sha256).digest()
-        sign = base64.b64encode(hmac_code).decode('utf-8')
-        return sign
+        return base64.b64encode(hmac_code).decode('utf-8')
+
+    def get_sign2(self, timestamp, secret):
+        """
+        钉钉 通知签名
+        Generate a URL-safe, base64-encoded HMAC-SHA256 signature.
+
+        Parameters:
+            timestamp (str): The timestamp used to generate the signature.
+            secret (str): The secret key used in the HMAC-SHA256 algorithm.
+
+        Returns:
+            str: The URL-safe, base64-encoded HMAC-SHA256 signature.
+        """
+        secret_enc = secret.encode('utf-8')
+        string_to_sign = '{}\n{}'.format(timestamp, secret)
+        string_to_sign_enc = string_to_sign.encode('utf-8')
+        hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
+        return quote_plus(base64.b64encode(hmac_code))
 
     def bark(self):
         """
@@ -55,21 +70,25 @@ class Notify:
         """
         # Check if BARK_TOKEN is set
         token = os.getenv('BARK_TOKEN')
-        # print(token)
         if not token:
             return
 
-        headers = {'Content-Type': self.json_type}
+        headers = {'Content-Type': 'application/json; charset=utf-8'}
         url = 'https://api.day.app/push'
         data = {
             "body": self.message,
-            "title": self.title,
-            # "group": self.group,
-            # "copy": self.copy,
             "device_key": token,
         }
 
         try:
+            if self.options.get('title'):
+                data['title'] = self.options.get('title')
+            if self.options.get('sound'):
+                data['sound'] = self.options.get('sound')
+            if self.options.get('group'):
+                data['group'] = self.options.get('group')
+            if self.options.get('url'):
+                data['url'] = self.options.get('url')
             response = requests.post(
                 url=url, headers=headers, data=json.dumps(data))
             if response.status_code == 200:
@@ -105,6 +124,50 @@ class Notify:
         except Exception as e:
             print('发送通知时出错:', str(e))
 
+    def dingtalk(self):
+        """
+        Sends a message to DingTalk.
+
+        This function sends a message to DingTalk using the provided DINGTALK_TOKEN. It checks if the token is set, and if not, it returns without sending the message. The message is sent as a POST request to the specified URL, with the content type set to 'application/json; charset=utf-8'. The message content is provided in the 'text' field of the 'content' object in the request data. If the LARK_SECRET is set, a timestamp and sign are added to the request data before sending the message.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+        """
+        # Check if DINGTALK_TOKEN is set
+        token = os.getenv('DINGTALK_TOKEN')
+        # print(token)
+        if not token:
+            return
+
+        headers = {'Content-Type': 'application/json; charset=utf-8'}
+        url = f'https://oapi.dingtalk.com/robot/send?access_token={token}'
+        data = {
+            "msgtype": "text",
+            "text": {
+                "content": self.message
+            }
+        }
+
+        secret = os.getenv('DINGTALK_SECRET')
+        if secret:
+            timestamp = str(round(time.time() * 1000))
+            sign = self.get_sign2(timestamp, secret)
+            url = f'{url}&timestamp={timestamp}&sign={sign}'
+
+        try:
+            response = requests.post(
+                url=url, headers=headers, data=json.dumps(data), timeout=5)
+            respJson = response.json()
+            if respJson['errcode'] == 0:
+                print('钉钉 推送成功')
+            else:
+                print('钉钉 推送失败')
+        except Exception as e:
+            print('发送通知时出错:', str(e))
+
     def lark(self):
         """
         Send a notification using Lark API.
@@ -116,7 +179,7 @@ class Notify:
         if not token:
             return
 
-        headers = {'Content-Type': self.json_type}
+        headers = {'Content-Type': 'application/json; charset=utf-8'}
         url = f'https://open.larksuite.com/open-apis/bot/v2/hook/{token}'
         data = {
             "msg_type": "text",
@@ -152,7 +215,7 @@ class Notify:
         if not token:
             return
 
-        headers = {'Content-Type': self.json_type}
+        headers = {'Content-Type': 'application/json; charset=utf-8'}
         url = f'https://open.feishu.cn/open-apis/bot/v2/hook/{token}'
         data = {
             "msg_type": "text",
@@ -180,24 +243,34 @@ class Notify:
     def send(self):
         bark = threading.Thread(target=self.bark)
         chanify = threading.Thread(target=self.chanify)
+        dingtalk = threading.Thread(target=self.dingtalk)
         lark = threading.Thread(target=self.lark)
         feishu = threading.Thread(target=self.feishu)
-        
+
         bark.start()
         chanify.start()
+        dingtalk.start()
         lark.start()
         feishu.start()
-    
+
         bark.join()
         chanify.join()
+        dingtalk.join()
         lark.join()
         feishu.join()
 
 
 # 使用示例
 if __name__ == "__main__":
-    notifier = Notify("Test Title", "Test Notify Server", "test", "复制")
+    options = {
+        "title": "Test Title",
+        "sound": "bell.caf",
+        "group": "Test Group",
+        "url": "https://www.idev.top",
+    }
+    notifier = Notify("Test Notify Server", options)
     notifier.bark()
     notifier.chanify()
+    notifier.dingtalk()
     notifier.lark()
     notifier.feishu()
