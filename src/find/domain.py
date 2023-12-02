@@ -35,7 +35,7 @@ class Domain():
         }
 
         ispUrl = 'https://www.west.xyz'
-        reqUrl = '{}/web/whois/whoisinfo?domain={}&server=&refresh=0'.format(
+        reqUrl = '{}/web/whois/whoisinfo?domain={}&server=&refresh=1'.format(
             ispUrl, domain)
 
         available = False

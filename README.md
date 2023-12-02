@@ -105,10 +105,10 @@ python main.py
 2.  自行选择所需的服务，相关命令查看 **[官方教程](https://github.com/whyour/qinglong#%E5%86%85%E7%BD%AE%E5%91%BD%E4%BB%A4)**。
 
     ```bash
-    ql repo https://jihulab.com/idevsig/tasks.git 'v2ex|megstudio' 'main' 'ocr'
+    ql repo https://jihulab.com/idevsig/tasks.git 'v2ex|megstudio|domain' 'main' 'ocr'
 
     # 海外
-    ql repo https://github.com/idevsig/tasks.git 'v2ex|megstudio' 'main' 'ocr'
+    ql repo https://github.com/idevsig/tasks.git 'v2ex|megstudio|domain' 'main' 'ocr'
     ```
 
 ## 技术背景
