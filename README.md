@@ -11,6 +11,7 @@
 | :--- | :--------------------------------------- | :----- | :------- | :----------- |
 | 签到 | [MegStudio](https://studio.brainpp.com/) | 是     | 是       | 免费算力平台 |
 | 签到 | [V2EX](https://www.v2ex.com/)            | 是     | 是       | 社交平台     |
+| 签到 | 查询域名是否可注册                       | 是     | 是       | 无           |
 
 ## 使用
 
@@ -44,6 +45,12 @@
   export FEISHU_SECRET='feishu_secret'
   ```
 
+- **[PushPlus](http://www.pushplus.plus/push1.html)**
+
+  ```bash
+  export PUSHPLUS_TOKEN='pushplus_token'
+  ```
+
 ### 2. 设置环境变量
 
 - **MegStudio 算力平台**
@@ -65,6 +72,12 @@
 
   ```bash
   export V2EX_COOKIE='your_cookie'
+  ```
+
+- **DOMAIN**
+
+  ```bash
+  export DOMAIN='example1.com;example2.com;example3.com'
   ```
 
 ### 3. 运行

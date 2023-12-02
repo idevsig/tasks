@@ -228,6 +228,9 @@ class MegStudio():
                 text = '成功' if checked else '失败'
                 message.append(f"{uid} 签到{text} \n")
 
+        if not message:
+            return None
+
         return "".join(message)
 
 

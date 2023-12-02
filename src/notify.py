@@ -240,24 +240,56 @@ class Notify:
         except Exception as e:
             print('发送通知时出错:', str(e))
 
+    def pushplus(self):
+        """
+        http://www.pushplus.plus/push1.html
+        """
+        # Check if PUSHPLUS_TOKEN is set
+        token = os.getenv('PUSHPLUS_TOKEN')
+        # print(token)
+        if not token:
+            return
+
+        headers = {'Content-Type': 'application/json; charset=utf-8'}
+        url = 'https://www.pushplus.plus/send'
+        data = {
+            "token": token,
+            "content": self.message
+        }
+        if self.options.get('title'):
+            data['title'] = self.options.get('title')
+
+        try:
+            response = requests.post(
+                url=url, headers=headers, data=json.dumps(data), timeout=5)
+            if response.status_code == 200:
+                print('pushplus 推送成功')
+            else:
+                print('pushplus 推送失败')
+        except Exception as e:
+            print('发送通知时出错:', str(e))
+
     def send(self):
         bark = threading.Thread(target=self.bark)
         chanify = threading.Thread(target=self.chanify)
         dingtalk = threading.Thread(target=self.dingtalk)
         lark = threading.Thread(target=self.lark)
         feishu = threading.Thread(target=self.feishu)
+        pushplus = threading.Thread(target=self.pushplus)
 
         bark.start()
         chanify.start()
         dingtalk.start()
         lark.start()
         feishu.start()
+        pushplus.start()
 
         bark.join()
         chanify.join()
         dingtalk.join()
         lark.join()
         feishu.join()
+        pushplus.join()
 
 
 # 使用示例

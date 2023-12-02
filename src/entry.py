@@ -2,6 +2,8 @@
 # _*_ coding:utf-8 _*_
 import threading
 
+from src.find.domain import Domain
+
 from src.notify import Notify
 from src.checkin.v2ex import V2EX
 from src.checkin.megstudio import MegStudio
@@ -22,9 +24,12 @@ def task(cls, service_name):
 def entry():
     v2ex = threading.Thread(target=task, args=(V2EX().run, 'V2EX'))
     megstudio = threading.Thread(target=task, args=(MegStudio().run, 'MegStudio'))
+    domain = threading.Thread(target=task, args=(Domain().run, 'Find Domain'))
 
     v2ex.start()
     megstudio.start()
+    domain.start()
 
     v2ex.join()
     megstudio.join()
+    domain.join()
