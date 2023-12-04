@@ -2,8 +2,9 @@
 
 自动化签到、通知、提醒等任务。
 
-- https://jihulab.com/idevsig/tasks
-- https://github.com/idevsig/tasks
+- https://git.jetsung.com/idev/tasks
+- https://framagit.org/idev/tasks
+- https://github.com/idev-sig/tasks
 
 ## 支持平台
 
