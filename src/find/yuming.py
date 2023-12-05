@@ -4,7 +4,7 @@ import os
 import requests
 
 """
-File: domain.py(检测可注册的域名)
+File: yuming.py(检测可注册的域名)
 Author: Jetsung
 cron: 05 */7 * * *
 new Env('检测可注册的域名');

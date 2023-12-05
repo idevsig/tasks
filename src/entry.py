@@ -2,11 +2,10 @@
 # _*_ coding:utf-8 _*_
 import threading
 
-from src.find.domain import Domain
-
 from src.notify import Notify
 from src.checkin.v2ex import V2EX
 from src.checkin.megstudio import MegStudio
+from src.find.yuming import Domain
 
 
 def task(cls, service_name):
