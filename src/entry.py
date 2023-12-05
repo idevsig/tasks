@@ -3,9 +3,10 @@
 import threading
 
 from src.notify import Notify
-from src.task.v2ex import V2EX
-from src.task.megstudio import MegStudio
-from src.task.domain import Domain
+from src.checkin.v2ex import V2EX
+from src.checkin.megstudio import MegStudio
+from src.find.yuming import Domain
+
 
 def task(cls, service_name):
     try:
