@@ -2,12 +2,10 @@
 # _*_ coding:utf-8 _*_
 import threading
 
-from src.find.domain import Domain
-
 from src.notify import Notify
-from src.checkin.v2ex import V2EX
-from src.checkin.megstudio import MegStudio
-
+from src.task.v2ex import V2EX
+from src.task.megstudio import MegStudio
+from src.task.domain import Domain
 
 def task(cls, service_name):
     try:
