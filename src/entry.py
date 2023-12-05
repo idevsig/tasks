@@ -15,6 +15,7 @@ def task(cls, service_name):
         if text is None:
             return
         message = "「{}」 \n{}".format(service_name, text)
+        print(message)
         Notify(message).send()
 
     except Exception as e:
