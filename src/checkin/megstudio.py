@@ -28,6 +28,10 @@ class MegStudio():
     def __init__(self) -> None:
         self.session = requests.Session()
 
+    def construct(self):
+        self.session = requests.Session()
+        return self.session
+
     def login(self, username, password):
         try:
             ocr = OCR()
@@ -37,7 +41,7 @@ class MegStudio():
 
             # 获取到登录页面
             login_url = 'https://studio.brainpp.com/api/authv1/login?redirectUrl=https://studio.brainpp.com/'
-            response = self.session.get(login_url)
+            response = self.construct().get(login_url)
 
             # 取出 login_challenge 值，登录时使用
             parsed_url = urlparse(response.url)
